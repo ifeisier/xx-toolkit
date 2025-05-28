@@ -2,7 +2,7 @@
 
 use super::reqwest::get;
 use crate::json::{get_f64_field, get_str_field};
-use anyhow::{Result, bail};
+use anyhow::Result;
 
 /// 坐标
 #[derive(Debug, Default)]
