@@ -19,3 +19,12 @@ pub fn get_f64_field(response: &serde_json::Value, key: &str) -> Result<f64> {
         .as_f64()
         .ok_or_else(|| anyhow!("响应数据{}转换错误.", key))
 }
+
+/// 从 JSON 对象中提取指定字段的 u64 值.
+pub fn get_u64_field(response: &serde_json::Value, key: &str) -> Result<u64> {
+    response
+        .get(key)
+        .ok_or_else(|| anyhow!("响应数据没有{}.", key))?
+        .as_u64()
+        .ok_or_else(|| anyhow!("响应数据{}转换错误.", key))
+}
