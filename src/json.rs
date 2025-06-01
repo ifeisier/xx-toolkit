@@ -13,6 +13,19 @@ pub struct Convert;
 pub struct Extract;
 
 impl Convert {
+    /// 尝试将 JSON 值转换为数组 (`Vec<Value>`).
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是数组类型, 返回该数组的引用; 否则返回错误.
+    pub fn try_into_array(value: &Value) -> Result<&Vec<Value>> {
+        value
+            .as_array()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为数组."))
+    }
+
     /// 尝试将 JSON 值转换为对象 (`Map<String, Value>`).
     ///
     /// # 参数
@@ -93,6 +106,22 @@ impl Convert {
 }
 
 impl Extract {
+    /// 从 JSON 对象中提取指定字段, 并尝试将其转换为数组 (`Vec<Value>`).
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在且类型为数组, 返回该数组的引用; 否则返回错误.
+    pub fn get_array<'a>(value: &'a Value, key: &str) -> Result<&'a Vec<Value>> {
+        value
+            .get(key)
+            .ok_or_else(|| anyhow!("缺失必要字段."))?
+            .as_array()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为数组."))
+    }
+
     /// 从 JSON 对象中提取指定字段, 并尝试将其转换为对象 (`Map<String, Value>`).
     ///
     /// # 参数
