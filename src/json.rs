@@ -52,6 +52,19 @@ impl Convert {
             .ok_or_else(|| anyhow!("字段类型错误, 应为浮点数."))
     }
 
+    /// 尝试将 JSON 值转换为 `u64` 整数.
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是数字类型, 返回其 `u64` 表示; 否则返回错误.
+    pub fn try_into_u64(value: &Value) -> Result<u64> {
+        value
+            .as_u64()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为无符号整数."))
+    }
+
     /// 尝试将 JSON 值转换为 `i64` 整数.
     ///
     /// # 参数
@@ -62,7 +75,7 @@ impl Convert {
     pub fn try_into_i64(value: &Value) -> Result<i64> {
         value
             .as_i64()
-            .ok_or_else(|| anyhow!("字段类型错误, 应为无符号整数."))
+            .ok_or_else(|| anyhow!("字段类型错误, 应为有符号整数."))
     }
 
     /// 尝试将 JSON 值转换为布尔值.
@@ -151,12 +164,28 @@ impl Extract {
     /// - `key`: 要提取的字段名.
     ///
     /// # 返回
-    /// 如果字段存在且为无符号整数, 返回 `i64`; 否则返回错误.
+    /// 如果字段存在且为有符号整数, 返回 `i64`; 否则返回错误.
     pub fn get_i64(value: &Value, key: &str) -> Result<i64> {
         value
             .get(key)
             .ok_or_else(|| anyhow!("缺失必要字段."))?
             .as_i64()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为有符号整数."))
+    }
+
+    /// 从 JSON 对象中提取指定字段, 并尝试将其转换为布尔值.
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在且为布尔类型, 返回其值; 否则返回错误.
+    pub fn get_bool(value: &Value, key: &str) -> Result<bool> {
+        value
+            .get(key)
+            .ok_or_else(|| anyhow!("缺失必要字段."))?
+            .as_bool()
             .ok_or_else(|| anyhow!("字段类型错误, 应为无符号整数."))
     }
 }
