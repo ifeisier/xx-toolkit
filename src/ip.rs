@@ -28,19 +28,19 @@ pub async fn get_coordinates_from_ip(ip_address: &str) -> Result<Coordinates> {
 
     let text = String::from_utf8_lossy(&response);
     let response = serde_json::from_str::<serde_json::Value>(&text.into_owned())?;
-    let status = Extract::str(&response, "status")?;
+    let status = Extract::get_str(&response, "status")?;
     if status == "fail" {
         coordinates.addr = "局域网".to_owned();
         return Ok(coordinates);
     }
 
-    let country = Extract::str(&response, "country")?;
-    let region_name = Extract::str(&response, "regionName")?;
-    let city = Extract::str(&response, "city")?;
+    let country = Extract::get_str(&response, "country")?;
+    let region_name = Extract::get_str(&response, "regionName")?;
+    let city = Extract::get_str(&response, "city")?;
     coordinates.addr = format!("{} {} {}", country, region_name, city);
 
-    coordinates.lat = Some(Extract::f64(&response, "lat")?);
-    coordinates.lon = Some(Extract::f64(&response, "lon")?);
+    coordinates.lat = Some(Extract::get_f64(&response, "lat")?);
+    coordinates.lon = Some(Extract::get_f64(&response, "lon")?);
 
     Ok(coordinates)
 }

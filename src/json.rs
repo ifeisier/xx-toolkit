@@ -36,7 +36,7 @@ impl Extract {
     ///
     /// # 返回
     /// 如果字段存在且为对象, 返回引用; 否则返回错误.
-    pub fn map<'a>(value: &'a Value, key: &str) -> Result<&'a Map<String, Value>> {
+    pub fn get_map<'a>(value: &'a Value, key: &str) -> Result<&'a Map<String, Value>> {
         value
             .get(key)
             .ok_or_else(|| anyhow!("缺失必要字段."))?
@@ -52,7 +52,7 @@ impl Extract {
     ///
     /// # 返回
     /// 如果字段存在且为字符串, 返回引用; 否则返回错误.
-    pub fn str<'a>(value: &'a Value, key: &str) -> Result<&'a str> {
+    pub fn get_str<'a>(value: &'a Value, key: &str) -> Result<&'a str> {
         value
             .get(key)
             .ok_or_else(|| anyhow!("缺失必要字段."))?
@@ -68,7 +68,7 @@ impl Extract {
     ///
     /// # 返回
     /// 如果字段存在且为数字, 返回 `f64`; 否则返回错误.
-    pub fn f64(value: &Value, key: &str) -> Result<f64> {
+    pub fn get_f64(value: &Value, key: &str) -> Result<f64> {
         value
             .get(key)
             .ok_or_else(|| anyhow!("缺失必要字段."))?
@@ -84,7 +84,7 @@ impl Extract {
     ///
     /// # 返回
     /// 如果字段存在且为无符号整数, 返回 `u64`; 否则返回错误.
-    pub fn u64(value: &Value, key: &str) -> Result<u64> {
+    pub fn get_u64(value: &Value, key: &str) -> Result<u64> {
         value
             .get(key)
             .ok_or_else(|| anyhow!("缺失必要字段."))?
