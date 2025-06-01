@@ -1,7 +1,7 @@
 //! IP 相关的工具
 
 use super::reqwest::get;
-use crate::json::{get_f64_field, get_str_field};
+use crate::json::Extract;
 use anyhow::Result;
 
 /// 坐标
@@ -28,19 +28,19 @@ pub async fn get_coordinates_from_ip(ip_address: &str) -> Result<Coordinates> {
 
     let text = String::from_utf8_lossy(&response);
     let response = serde_json::from_str::<serde_json::Value>(&text.into_owned())?;
-    let status = get_str_field(&response, "status")?;
+    let status = Extract::str(&response, "status")?;
     if status == "fail" {
         coordinates.addr = "局域网".to_owned();
         return Ok(coordinates);
     }
 
-    let country = get_str_field(&response, "country")?;
-    let region_name = get_str_field(&response, "regionName")?;
-    let city = get_str_field(&response, "city")?;
+    let country = Extract::str(&response, "country")?;
+    let region_name = Extract::str(&response, "regionName")?;
+    let city = Extract::str(&response, "city")?;
     coordinates.addr = format!("{} {} {}", country, region_name, city);
 
-    coordinates.lat = Some(get_f64_field(&response, "lat")?);
-    coordinates.lon = Some(get_f64_field(&response, "lon")?);
+    coordinates.lat = Some(Extract::f64(&response, "lat")?);
+    coordinates.lon = Some(Extract::f64(&response, "lon")?);
 
     Ok(coordinates)
 }
