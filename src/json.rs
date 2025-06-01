@@ -1,46 +1,94 @@
-//! JSON 工具
+//! JSON 工具库
+//!
+//! 提供用于处理 JSON 数据的转换和提取功能,
+//! 帮助开发者更方便地操作 serde_json::Value 类型.
 
 use anyhow::{Result, anyhow};
 use serde_json::{Map, Value};
 
-/// 用来将 JSON 值转换成指定类型.
+/// 提供将 JSON `Value` 类型转换为目标类型的方法.
 pub struct Convert;
 
-/// 用来提取 JSON 值并转换成指定类型.
+/// 提供从 JSON 对象中提取特定字段并转换为目标类型的方法.
 pub struct Extract;
 
 impl Convert {
-    /// 尝试将 JSON 值转换为 Map.
+    /// 尝试将 JSON 值转换为对象 (`Map<String, Value>`).
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是一个对象, 返回对该对象的引用; 否则返回错误.
     pub fn try_into_map(value: &Value) -> Result<&Map<String, Value>> {
         value
             .as_object()
-            .ok_or_else(|| anyhow::anyhow!("字段类型错误,应为对象."))
+            .ok_or_else(|| anyhow!("字段类型错误,应为对象."))
     }
 }
 
-/// 从 JSON 对象中提取指定字段的字符串值.
-pub fn get_str_field<'a>(response: &'a Value, key: &str) -> Result<&'a str> {
-    response
-        .get(key)
-        .ok_or_else(|| anyhow!("响应数据没有{}.", key))?
-        .as_str()
-        .ok_or_else(|| anyhow!("响应数据{}转换错误.", key))
-}
+impl Extract {
+    /// 从 JSON 对象中提取指定字段, 并尝试将其转换为对象 (`Map<String, Value>`).
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在且为对象, 返回引用; 否则返回错误.
+    pub fn map<'a>(value: &'a Value, key: &str) -> Result<&'a Map<String, Value>> {
+        value
+            .get(key)
+            .ok_or_else(|| anyhow!("缺失必要字段."))?
+            .as_object()
+            .ok_or_else(|| anyhow!("字段类型错误,应为对象."))
+    }
 
-/// 从 JSON 对象中提取指定字段的 f64 值.
-pub fn get_f64_field(response: &Value, key: &str) -> Result<f64> {
-    response
-        .get(key)
-        .ok_or_else(|| anyhow!("响应数据没有{}.", key))?
-        .as_f64()
-        .ok_or_else(|| anyhow!("响应数据{}转换错误.", key))
-}
+    /// 从 JSON 对象中提取指定字段, 并尝试将其转换为字符串.
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在且为字符串, 返回引用; 否则返回错误.
+    pub fn str<'a>(value: &'a Value, key: &str) -> Result<&'a str> {
+        value
+            .get(key)
+            .ok_or_else(|| anyhow!("缺失必要字段."))?
+            .as_str()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为字符串."))
+    }
 
-/// 从 JSON 对象中提取指定字段的 u64 值.
-pub fn get_u64_field(response: &Value, key: &str) -> Result<u64> {
-    response
-        .get(key)
-        .ok_or_else(|| anyhow!("响应数据没有{}.", key))?
-        .as_u64()
-        .ok_or_else(|| anyhow!("响应数据{}转换错误.", key))
+    /// 从 JSON 对象中提取指定字段, 并尝试将其转换为 `f64`.
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在且为数字, 返回 `f64`; 否则返回错误.
+    pub fn f64(value: &Value, key: &str) -> Result<f64> {
+        value
+            .get(key)
+            .ok_or_else(|| anyhow!("缺失必要字段."))?
+            .as_f64()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为浮点数."))
+    }
+
+    /// 从 JSON 对象中提取指定字段, 并尝试将其转换为 `u64`.
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在且为无符号整数, 返回 `u64`; 否则返回错误.
+    pub fn u64(value: &Value, key: &str) -> Result<u64> {
+        value
+            .get(key)
+            .ok_or_else(|| anyhow!("缺失必要字段."))?
+            .as_u64()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为无符号整数."))
+    }
 }
