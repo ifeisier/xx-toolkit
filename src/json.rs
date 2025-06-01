@@ -25,6 +25,58 @@ impl Convert {
             .as_object()
             .ok_or_else(|| anyhow!("字段类型错误,应为对象."))
     }
+
+    /// 尝试将 JSON 值转换为字符串引用.
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是字符串, 返回其引用; 否则返回错误.
+    pub fn try_into_str(value: &Value) -> Result<&str> {
+        value
+            .as_str()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为字符串."))
+    }
+
+    /// 尝试将 JSON 值转换为 `f64` 浮点数.
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是数字类型, 返回其 `f64` 表示; 否则返回错误.
+    pub fn try_into_f64(value: &Value) -> Result<f64> {
+        value
+            .as_f64()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为浮点数."))
+    }
+
+    /// 尝试将 JSON 值转换为 `i64` 整数.
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是数字类型, 返回其 `i64` 表示; 否则返回错误.
+    pub fn try_into_i64(value: &Value) -> Result<i64> {
+        value
+            .as_i64()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为无符号整数."))
+    }
+
+    /// 尝试将 JSON 值转换为布尔值.
+    ///
+    /// # 参数
+    /// - `value`: 要转换的 JSON 值.
+    ///
+    /// # 返回
+    /// 如果 `value` 是布尔类型, 返回其值; 否则返回错误.
+    pub fn try_into_bool(value: &Value) -> Result<bool> {
+        value
+            .as_bool()
+            .ok_or_else(|| anyhow!("字段类型错误, 应为布尔值."))
+    }
 }
 
 impl Extract {
