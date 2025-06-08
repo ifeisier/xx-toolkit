@@ -138,6 +138,18 @@ impl Extract {
             .ok_or_else(|| anyhow!("字段类型错误,应为对象."))
     }
 
+    /// 从 JSON 对象中提取指定字段的值.
+    ///
+    /// # 参数
+    /// - `value`: JSON 对象.
+    /// - `key`: 要提取的字段名.
+    ///
+    /// # 返回
+    /// 如果字段存在, 返回该字段的引用; 否则返回错误.
+    pub fn get_value<'a>(value: &'a Value, key: &str) -> Result<&'a Value> {
+        value.get(key).ok_or_else(|| anyhow!("缺失必要字段."))
+    }
+
     /// 从 JSON 对象中提取指定字段, 并尝试将其转换为字符串.
     ///
     /// # 参数
