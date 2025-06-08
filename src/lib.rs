@@ -7,6 +7,6 @@ pub mod mqttv5;
 #[allow(dead_code)]
 pub mod rand;
 #[allow(dead_code)]
-mod reqwest;
+pub mod reqwest;
 #[allow(dead_code)]
 pub mod yaml;
