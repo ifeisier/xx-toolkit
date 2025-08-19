@@ -2,7 +2,7 @@
 name = "xx-toolkit"
 version = "0.1.0"
 edition = "2024"
-license-file = "LICENSE"
+license = "MIT"
 description = "我个人的 Rust 工具包."
 
 [dependencies]
